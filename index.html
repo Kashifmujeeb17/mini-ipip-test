@@ -134,7 +134,8 @@
   <h1>Mini-IPIP 20-Item Personality Test</h1>
   <form id="mini-ipip-form">
   <label for="username"><strong>Name:</strong></label><br>
-  <input type="text" id="username" name="username" placeholder="Enter your name" style="margin-bottom: 20px; padding: 8px; width: 300px;"><br><br>
+  <input type="text" id="username" name="username" placeholder="Enter your name" required style="margin-bottom: 20px; padding: 8px; width: 300px;">
+
 
     <div id="questions"></div>
     <button type="submit">Submit</button>
@@ -199,6 +200,11 @@ const traitClass = {
 
 document.getElementById('mini-ipip-form').addEventListener('submit', e => {
   e.preventDefault();
+
+  const submitButton = e.target.querySelector("button");
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
+
   const formData = new FormData(e.target);
   const username = formData.get('username') || 'Anonymous';
   const scores = { E: 0, N: 0, O: 0, A: 0, C: 0 };
@@ -221,40 +227,46 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
     percentages[trait] = percent;
   }
 
+  // Submit to Netlify function
   fetch("/.netlify/functions/submit-to-sheet", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    name: username,
-    scores: percentages
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: username,
+      scores: percentages
+    })
   })
-})
-.then(() => {
-  console.log("✅ Submitted to Google Sheets via Netlify function");
-})
-.catch(error => {
-  console.error("❌ Submission failed:", error);
-});
-
-
-
-  // Display results
-  let bars = Object.entries(percentages).map(([trait, percent]) => {
-    return `
-      <div class="trait-bar-container">
-        <span class="trait-label">${traitNames[trait]}</span>
-        <div class="trait-bar-bg">
-          <div class="trait-bar ${traitClass[trait]}" style="width:${percent}%;"></div>
-          <div class="trait-thumb ${traitClass[trait]}" style="left:calc(${percent}%);"></div>
+  .then(() => {
+    // Show results and thank you message
+    let bars = Object.entries(percentages).map(([trait, percent]) => {
+      return `
+        <div class="trait-bar-container">
+          <span class="trait-label">${traitNames[trait]}</span>
+          <div class="trait-bar-bg">
+            <div class="trait-bar ${traitClass[trait]}" style="width:${percent}%"></div>
+            <div class="trait-thumb ${traitClass[trait]}" style="left:calc(${percent}%);"></div>
+          </div>
+          <span class="trait-value">${percent}%</span>
         </div>
-        <span class="trait-value">${percent}%</span>
-      </div>
-    `;
-  }).join('');
+      `;
+    }).join('');
 
-  document.getElementById('results').innerHTML = `<h3>Your Scores</h3>${bars}`;
+    document.getElementById('results').innerHTML = `
+      <h3>Thank you, <span style="color:green">${username}</span>! Your results have been submitted.</h3>
+      ${bars}
+    `;
+
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit";
+  })
+  .catch(error => {
+    console.error("❌ Submission failed:", error);
+    alert("Something went wrong. Please try again.");
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit";
+  });
 });
 
   </script>
