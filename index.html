@@ -223,7 +223,8 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
 
   // Send to Google Sheets
   fetch("https://script.google.com/macros/s/AKfycby1WJhhQZxeWRnXNRd31hVXpy0zd9mErzHVmBkawZ2PSQ5hF-kpUveYJSKU-Dt_HK0k/exec", {
-    method: "POST",
+  method: "POST",
+  mode: "no-cors",
   headers: {
     "Content-Type": "application/json"
   },
@@ -232,13 +233,13 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
     scores: percentages
   })
 })
-.then(response => response.text())
-.then(data => {
-  console.log("✅ Google Sheets response:", data);
+.then(() => {
+  console.log("✅ Data likely sent (but cannot confirm in 'no-cors' mode)");
 })
 .catch(error => {
-  console.error("❌ Failed to send to Google Sheets:", error);
+  console.error("❌ Failed to send:", error);
 });
+
 
   // Display results
   let bars = Object.entries(percentages).map(([trait, percent]) => {
