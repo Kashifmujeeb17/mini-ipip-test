@@ -11,18 +11,20 @@
       background: #fff;
       color: #333;
     }
-    .main-heading {
-      text-align: center;
-      color: #4c66f1;
-      font-size: 2em;
-      margin-bottom: 0.2em;
-    }
-    .sub-heading {
-      text-align: center;
-      color: #555;
-      font-size: 1.2em;
-      margin-bottom: 40px;
-    }
+.main-heading {
+  text-align: center;
+  color: #4c66f1; /* matches your button color */
+  font-size: 2em;
+  margin-bottom: 0.2em;
+}
+
+.sub-heading {
+  text-align: center;
+  color: #555;
+  font-size: 1.2em;
+  margin-bottom: 40px;
+}
+
     .question-block {
       margin: 30px 0;
     }
@@ -79,115 +81,209 @@
       margin-top: 30px;
       font-weight: bold;
     }
-    .result-card {
-      background: #f9f9f9;
-      padding: 20px;
-      margin-bottom: 16px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-    }
-    .result-title {
-      font-size: 1.2em;
-      font-weight: bold;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .result-bar-bg {
-      height: 12px;
-      background: #ddd;
-      border-radius: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-    .result-bar-fill {
-      height: 100%;
-      background: #4c66f1;
-      border-radius: 6px;
-      transition: width 0.4s ease;
-    }
-    .result-value {
-      text-align: right;
-      margin-top: 6px;
-      font-weight: bold;
-    }
+
+
+.trait-bar-container {
+  margin: 24px 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.trait-label {
+  width: 160px;
+  font-weight: bold;
+}
+
+.trait-bar-bg {
+  flex: 1;
+  height: 10px;
+  border-radius: 8px;
+  background: #eee;
+  position: relative;
+  margin: 0 8px;
+}
+
+.trait-bar {
+  height: 100%;
+  border-radius: 8px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.trait-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+  color: #333;
+}
+
+.trait-thumb.extraversion { border-color: #f4b942; color: #f4b942; }
+.trait-thumb.neuroticism { border-color: #3bb3c3; color: #3bb3c3; }
+.trait-thumb.openness { border-color: #4caf50; color: #4caf50; }
+.trait-thumb.agreeableness { border-color: #f44336; color: #f44336; }
+.trait-thumb.conscientiousness { border-color: #8e44ec; color: #8e44ec; }
+
+.trait-value {
+  margin-left: 8px;
+  font-weight: bold;
+}
+
   </style>
 </head>
 <body>
   <h1 class="main-heading">🧠 Who Are You?</h1>
-  <h2 class="sub-heading">Take the 5-Minute Personality Test</h2>
+<h2 class="sub-heading">Take the 5-Minute Personality Test</h2>
   <form id="mini-ipip-form">
-    <label for="username"><strong>Name:</strong></label><br>
-    <input type="text" id="username" name="username" placeholder="Enter your name" required style="margin-bottom: 20px; padding: 8px; width: 300px;">
+  <label for="username"><strong>Name:</strong></label><br>
+  <input type="text" id="username" name="username" placeholder="Enter your name" required style="margin-bottom: 20px; padding: 8px; width: 300px;">
+
+
     <div id="questions"></div>
     <button type="submit">Submit</button>
   </form>
   <div id="results"></div>
   <script>
-    const questions = [...]; // (Your existing questions array remains unchanged)
+    const questions = [
+      { t: 'E', text: 'I am the life of the party.' },
+      { t: 'E', text: 'I don’t talk a lot.', reverse: true },
+      { t: 'E', text: 'I talk to a lot of different people at parties.' },
+      { t: 'E', text: 'I keep in the background.', reverse: true },
+      { t: 'N', text: 'I get stressed out easily.' },
+      { t: 'N', text: 'I am relaxed most of the time.', reverse: true },
+      { t: 'N', text: 'I worry about things.' },
+      { t: 'N', text: 'I seldom feel blue.', reverse: true },
+      { t: 'O', text: 'I have a vivid imagination.' },
+      { t: 'O', text: 'I am not interested in abstract ideas.', reverse: true },
+      { t: 'O', text: 'I have difficulty understanding abstract ideas.', reverse: true },
+      { t: 'O', text: 'I do not have a good imagination.', reverse: true },
+      { t: 'A', text: 'I sympathize with others’ feelings.' },
+      { t: 'A', text: 'I am not interested in other people’s problems.', reverse: true },
+      { t: 'A', text: 'I feel others’ emotions.' },
+      { t: 'A', text: 'I am not really interested in others.', reverse: true },
+      { t: 'C', text: 'I get chores done right away.' },
+      { t: 'C', text: 'I often forget to put things back in their proper place.', reverse: true },
+      { t: 'C', text: 'I like order.' },
+      { t: 'C', text: 'I make a mess of things.', reverse: true }
+    ];
 
-    const traitNames = { E: "Extraversion", N: "Neuroticism", O: "Openness", A: "Agreeableness", C: "Conscientiousness" };
-    const traitIcons = { E: "😃", N: "😰", O: "🎨", A: "🤝", C: "✅" };
-
-    document.getElementById('mini-ipip-form').addEventListener('submit', e => {
-      e.preventDefault();
-      const submitButton = e.target.querySelector("button");
-      submitButton.disabled = true;
-      submitButton.textContent = "Submitting...";
-
-      const formData = new FormData(e.target);
-      const username = formData.get('username') || 'Anonymous';
-      const scores = { E: 0, N: 0, O: 0, A: 0, C: 0 };
-      const counts = { E: 0, N: 0, O: 0, A: 0, C: 0 };
-
-      questions.forEach((q, i) => {
-        const raw = parseInt(formData.get(`q${i}`));
-        if (!isNaN(raw)) {
-          const val = q.reverse ? 6 - raw : raw;
-          scores[q.t] += val;
-          counts[q.t]++;
-        }
-      });
-
-      const percentages = {};
-      for (const trait in scores) {
-        const avg = scores[trait] / counts[trait];
-        const percent = Math.round((avg - 1) / 4 * 100);
-        percentages[trait] = percent;
-      }
-
-      fetch("/.netlify/functions/submit-to-sheet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: username, scores: percentages })
-      })
-      .then(() => {
-        const resultsHTML = Object.entries(percentages).map(([trait, percent]) => `
-          <div class="result-card">
-            <div class="result-title">${traitIcons[trait]} ${traitNames[trait]}</div>
-            <div class="result-bar-bg">
-              <div class="result-bar-fill" style="width:${percent}%"></div>
-            </div>
-            <div class="result-value">${percent}%</div>
-          </div>
-        `).join('');
-
-        document.getElementById('results').innerHTML = `
-          <h3>Thank you, <span style="color:green">${username}</span>! Your results have been submitted.</h3>
-          ${resultsHTML}
-        `;
-
-        submitButton.disabled = false;
-        submitButton.textContent = "Submit";
-      })
-      .catch(error => {
-        console.error("❌ Submission failed:", error);
-        alert("Something went wrong. Please try again.");
-        submitButton.disabled = false;
-        submitButton.textContent = "Submit";
-      });
+    const qContainer = document.getElementById('questions');
+    questions.forEach((q, i) => {
+      const qDiv = document.createElement('div');
+      qDiv.className = 'question-block';
+      qDiv.innerHTML = 
+        <div class="statement">${i + 1}. ${q.text}</div>
+        <div class="scale">
+          <span class="label-text">Disagree</span>
+          ${[1, 2, 3, 4, 5].map(v => 
+            <input type="radio" id="q${i}-${v}" name="q${i}" value="${v}" />
+            <label for="q${i}-${v}"></label>
+          ).join('')}
+          <span class="label-text">Agree</span>
+        </div>
+      ;
+      qContainer.appendChild(qDiv);
     });
+
+    const traitNames = {
+  E: "Extraversion",
+  N: "Neuroticism",
+  O: "Openness",
+  A: "Agreeableness",
+  C: "Conscientiousness"
+};
+const traitClass = {
+  E: "extraversion",
+  N: "neuroticism",
+  O: "openness",
+  A: "agreeableness",
+  C: "conscientiousness"
+};
+
+document.getElementById('mini-ipip-form').addEventListener('submit', e => {
+  e.preventDefault();
+
+  const submitButton = e.target.querySelector("button");
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
+
+  const formData = new FormData(e.target);
+  const username = formData.get('username') || 'Anonymous';
+  const scores = { E: 0, N: 0, O: 0, A: 0, C: 0 };
+  const counts = { E: 0, N: 0, O: 0, A: 0, C: 0 };
+
+  questions.forEach((q, i) => {
+    const raw = parseInt(formData.get(q${i}));
+    if (!isNaN(raw)) {
+      const val = q.reverse ? 6 - raw : raw;
+      scores[q.t] += val;
+      counts[q.t]++;
+    }
+  });
+
+  // Calculate percentages
+  const percentages = {};
+  for (const trait in scores) {
+    const avg = scores[trait] / counts[trait];
+    const percent = Math.round((avg - 1) / 4 * 100);
+    percentages[trait] = percent;
+  }
+
+  // Submit to Netlify function
+  fetch("/.netlify/functions/submit-to-sheet", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: username,
+      scores: percentages
+    })
+  })
+  .then(() => {
+    // Show results and thank you message
+    let bars = Object.entries(percentages).map(([trait, percent]) => {
+      return 
+        <div class="trait-bar-container">
+          <span class="trait-label">${traitNames[trait]}</span>
+          <div class="trait-bar-bg">
+            <div class="trait-bar ${traitClass[trait]}" style="width:${percent}%"></div>
+            <div class="trait-thumb ${traitClass[trait]}" style="left:calc(${percent}%);"></div>
+          </div>
+          <span class="trait-value">${percent}%</span>
+        </div>
+      ;
+    }).join('');
+
+    document.getElementById('results').innerHTML = 
+      <h3>Thank you, <span style="color:green">${username}</span>! Your results have been submitted.</h3>
+      ${bars}
+    ;
+
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit";
+  })
+  .catch(error => {
+    console.error("❌ Submission failed:", error);
+    alert("Something went wrong. Please try again.");
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit";
+  });
+});
+
   </script>
 </body>
 </html>
