@@ -221,10 +221,8 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
     percentages[trait] = percent;
   }
 
-  // Send to Google Sheets
-  fetch("https://script.google.com/macros/s/AKfycby1WJhhQZxeWRnXNRd31hVXpy0zd9mErzHVmBkawZ2PSQ5hF-kpUveYJSKU-Dt_HK0k/exec", {
+  fetch("/.netlify/functions/submit-to-sheet", {
   method: "POST",
-  mode: "no-cors",
   headers: {
     "Content-Type": "application/json"
   },
@@ -234,11 +232,12 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
   })
 })
 .then(() => {
-  console.log("✅ Data likely sent (but cannot confirm in 'no-cors' mode)");
+  console.log("✅ Submitted to Google Sheets via Netlify function");
 })
 .catch(error => {
-  console.error("❌ Failed to send:", error);
+  console.error("❌ Submission failed:", error);
 });
+
 
 
   // Display results
