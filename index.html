@@ -264,13 +264,16 @@
       qDiv.innerHTML = `
         <div class="statement">${i + 1}. ${q.text}</div>
         <div class="scale">
-          <span class="label-text">Disagree</span>
+         <div class="scale">
+  <span class="label-text left-label">Disagree</span>
+  <div class="scale-options">
           ${[1, 2, 3, 4, 5].map(v => `
             <input type="radio" id="q${i}-${v}" name="q${i}" value="${v}" />
             <label for="q${i}-${v}"></label>
           `).join('')}
-          <span class="label-text">Agree</span>
-        </div>
+           </div>
+  <span class="label-text right-label">Agree</span>
+</div>
       `;
       qContainer.appendChild(qDiv);
     });
@@ -314,10 +317,16 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
   // Calculate percentages
   const percentages = {};
   for (const trait in scores) {
-    const avg = scores[trait] / counts[trait];
-    const percent = Math.round((avg - 1) / 4 * 100);
-    percentages[trait] = percent;
+  if (counts[trait] === 0) {
+    percentages[trait] = 0; // Or skip or show warning
+    continue;
   }
+  const avg = scores[trait] / counts[trait];
+  const percent = Math.round((avg - 1) / 4 * 100);
+  percentages[trait] = percent;
+}
+
+
 
   // Submit to Netlify function
   fetch("/.netlify/functions/submit-to-sheet", {
