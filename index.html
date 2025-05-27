@@ -25,14 +25,6 @@
   margin-bottom: 40px;
 }
 
-.result-bar-fill {
-  height: 100%;
-  background: #4c66f1;
-  border-radius: 6px;
-  width: 0%; /* Start at 0 */
-  transition: width 1s ease-out;
-}
-
     .question-block {
       margin: 30px 0;
     }
@@ -149,75 +141,6 @@
   margin-left: 8px;
   font-weight: bold;
 }
-/* Responsive styles */
-/* Responsive design for all sections */
-@media (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  .main-heading {
-    font-size: 1.5em;
-    text-align: center;
-  }
-
-  .sub-heading {
-    font-size: 1em;
-    text-align: center;
-  }
-
-  input[type="text"] {
-    width: 100% !important;
-    box-sizing: border-box;
-  }
-
-  .scale {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .scale label:nth-of-type(1) { width: 40px; height: 40px; }
-  .scale label:nth-of-type(2) { width: 36px; height: 36px; }
-  .scale label:nth-of-type(3) { width: 32px; height: 32px; }
-  .scale label:nth-of-type(4) { width: 36px; height: 36px; }
-  .scale label:nth-of-type(5) { width: 40px; height: 40px; }
-
-  .label-text {
-    font-size: 14px;
-    flex-basis: 100%;
-    text-align: center;
-  }
-
-  .trait-bar-container {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .trait-label {
-    width: 100%;
-    font-size: 16px;
-    margin-bottom: 4px;
-  }
-
-  .trait-bar-bg {
-    width: 100%;
-    margin: 0;
-  }
-
-  .trait-value {
-    margin-top: 8px;
-    text-align: right;
-    width: 100%;
-  }
-
-  button {
-    width: 100%;
-    font-size: 16px;
-    padding: 12px;
-  }
-}
-
 
   </style>
 </head>
@@ -264,16 +187,13 @@
       qDiv.innerHTML = `
         <div class="statement">${i + 1}. ${q.text}</div>
         <div class="scale">
-         <div class="scale">
-  <span class="label-text left-label">Disagree</span>
-  <div class="scale-options">
+          <span class="label-text">Disagree</span>
           ${[1, 2, 3, 4, 5].map(v => `
             <input type="radio" id="q${i}-${v}" name="q${i}" value="${v}" />
             <label for="q${i}-${v}"></label>
           `).join('')}
-           </div>
-  <span class="label-text right-label">Agree</span>
-</div>
+          <span class="label-text">Agree</span>
+        </div>
       `;
       qContainer.appendChild(qDiv);
     });
@@ -317,16 +237,10 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
   // Calculate percentages
   const percentages = {};
   for (const trait in scores) {
-  if (counts[trait] === 0) {
-    percentages[trait] = 0; // Or skip or show warning
-    continue;
+    const avg = scores[trait] / counts[trait];
+    const percent = Math.round((avg - 1) / 4 * 100);
+    percentages[trait] = percent;
   }
-  const avg = scores[trait] / counts[trait];
-  const percent = Math.round((avg - 1) / 4 * 100);
-  percentages[trait] = percent;
-}
-
-
 
   // Submit to Netlify function
   fetch("/.netlify/functions/submit-to-sheet", {
@@ -346,7 +260,7 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
         <div class="trait-bar-container">
           <span class="trait-label">${traitNames[trait]}</span>
           <div class="trait-bar-bg">
-       <div class="trait-bar ${traitClass[trait]} result-bar-fill" data-final="${percent}" style="width: 0%"></div>
+            <div class="trait-bar ${traitClass[trait]}" style="width:${percent}%"></div>
             <div class="trait-thumb ${traitClass[trait]}" style="left:calc(${percent}%);"></div>
           </div>
           <span class="trait-value">${percent}%</span>
@@ -358,14 +272,6 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
       <h3>Thank you, <span style="color:green">${username}</span>! Your results have been submitted.</h3>
       ${bars}
     `;
-// Animate bars after they are added to the DOM
-setTimeout(() => {
-  document.querySelectorAll('.result-bar-fill').forEach(bar => {
-    const percent = bar.getAttribute('data-final');
-    bar.style.width = percent + '%';
-  });
-}, 100);
- // delay to trigger transition
 
     submitButton.disabled = false;
     submitButton.textContent = "Submit";
