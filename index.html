@@ -184,17 +184,17 @@
     questions.forEach((q, i) => {
       const qDiv = document.createElement('div');
       qDiv.className = 'question-block';
-      qDiv.innerHTML = 
+      qDiv.innerHTML = `
         <div class="statement">${i + 1}. ${q.text}</div>
         <div class="scale">
           <span class="label-text">Disagree</span>
-          ${[1, 2, 3, 4, 5].map(v => 
+          ${[1, 2, 3, 4, 5].map(v => `
             <input type="radio" id="q${i}-${v}" name="q${i}" value="${v}" />
             <label for="q${i}-${v}"></label>
-          ).join('')}
+          `).join('')}
           <span class="label-text">Agree</span>
         </div>
-      ;
+      `;
       qContainer.appendChild(qDiv);
     });
 
@@ -226,7 +226,7 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
   const counts = { E: 0, N: 0, O: 0, A: 0, C: 0 };
 
   questions.forEach((q, i) => {
-    const raw = parseInt(formData.get(q${i}));
+    const raw = parseInt(formData.get(`q${i}`));
     if (!isNaN(raw)) {
       const val = q.reverse ? 6 - raw : raw;
       scores[q.t] += val;
@@ -256,7 +256,7 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
   .then(() => {
     // Show results and thank you message
     let bars = Object.entries(percentages).map(([trait, percent]) => {
-      return 
+      return `
         <div class="trait-bar-container">
           <span class="trait-label">${traitNames[trait]}</span>
           <div class="trait-bar-bg">
@@ -265,13 +265,13 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
           </div>
           <span class="trait-value">${percent}%</span>
         </div>
-      ;
+      `;
     }).join('');
 
-    document.getElementById('results').innerHTML = 
+    document.getElementById('results').innerHTML = `
       <h3>Thank you, <span style="color:green">${username}</span>! Your results have been submitted.</h3>
       ${bars}
-    ;
+    `;
 
     submitButton.disabled = false;
     submitButton.textContent = "Submit";
