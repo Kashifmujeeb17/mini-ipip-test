@@ -346,7 +346,7 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
         <div class="trait-bar-container">
           <span class="trait-label">${traitNames[trait]}</span>
           <div class="trait-bar-bg">
-            <div class="trait-bar ${traitClass[trait]} result-bar-fill" data-final="${percent}" style="width: 0%"></div>
+       <div class="trait-bar ${traitClass[trait]} result-bar-fill" data-final="${percent}" style="width: 0%"></div>
             <div class="trait-thumb ${traitClass[trait]}" style="left:calc(${percent}%);"></div>
           </div>
           <span class="trait-value">${percent}%</span>
@@ -361,10 +361,11 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
 // Animate bars after they are added to the DOM
 setTimeout(() => {
   document.querySelectorAll('.result-bar-fill').forEach(bar => {
-  const percent = bar.getAttribute('data-final');
-  bar.style.width = percent + '%';
-});
-}, 100); // delay to trigger transition
+    const percent = bar.getAttribute('data-final');
+    bar.style.width = percent + '%';
+  });
+}, 100);
+ // delay to trigger transition
 
     submitButton.disabled = false;
     submitButton.textContent = "Submit";
