@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Mini-IPIP</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #fff;
+      color: #333;
+    }
+    .question-block {
+      margin: 30px 0;
+    }
+    .statement {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .scale {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+    .scale input[type="radio"] {
+      display: none;
+    }
+    .scale label {
+      border-radius: 50%;
+      border: 4px solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .scale label:nth-of-type(1) { width: 64px; height: 64px; border-color: #2a8bc9; }
+    .scale label:nth-of-type(2) { width: 56px; height: 56px; border-color: #6ab4dd; }
+    .scale label:nth-of-type(3) { width: 48px; height: 48px; border-color: #cccccc; }
+    .scale label:nth-of-type(4) { width: 56px; height: 56px; border-color: #5cbf60; }
+    .scale label:nth-of-type(5) { width: 64px; height: 64px; border-color: #3baa3b; }
+    .scale label:hover {
+      transform: scale(1.1);
+    }
+    .scale input:checked + label { background-color: currentColor; }
+    .scale input[id$='-1']:checked + label { background-color: #2a8bc9; }
+    .scale input[id$='-2']:checked + label { background-color: #6ab4dd; }
+    .scale input[id$='-3']:checked + label { background-color: #cccccc; }
+    .scale input[id$='-4']:checked + label { background-color: #5cbf60; }
+    .scale input[id$='-5']:checked + label { background-color: #3baa3b; }
+    .label-text {
+      margin: 0 8px;
+      font-weight: bold;
+    }
+    button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: #4c66f1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #results {
+      margin-top: 30px;
+      font-weight: bold;
+    }
+
+
+.trait-bar-container {
+  margin: 24px 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.trait-label {
+  width: 160px;
+  font-weight: bold;
+}
+
+.trait-bar-bg {
+  flex: 1;
+  height: 10px;
+  border-radius: 8px;
+  background: #eee;
+  position: relative;
+  margin: 0 8px;
+}
+
+.trait-bar {
+  height: 100%;
+  border-radius: 8px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.trait-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+  color: #333;
+}
+
+.trait-thumb.extraversion { border-color: #f4b942; color: #f4b942; }
+.trait-thumb.neuroticism { border-color: #3bb3c3; color: #3bb3c3; }
+.trait-thumb.openness { border-color: #4caf50; color: #4caf50; }
+.trait-thumb.agreeableness { border-color: #f44336; color: #f44336; }
+.trait-thumb.conscientiousness { border-color: #8e44ec; color: #8e44ec; }
+
+.trait-value {
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+  </style>
+</head>
+<body>
+  <h1>Mini-IPIP 20-Item Personality Test</h1>
+  <form id="mini-ipip-form">
+  <label for="username"><strong>Name:</strong></label><br>
+  <input type="text" id="username" name="username" placeholder="Enter your name" style="margin-bottom: 20px; padding: 8px; width: 300px;"><br><br>
+
+    <div id="questions"></div>
+    <button type="submit">Submit</button>
+  </form>
+  <div id="results"></div>
+  <script>
+    const questions = [
+      { t: 'E', text: 'I am the life of the party.' },
+      { t: 'E', text: 'I don’t talk a lot.', reverse: true },
+      { t: 'E', text: 'I talk to a lot of different people at parties.' },
+      { t: 'E', text: 'I keep in the background.', reverse: true },
+      { t: 'N', text: 'I get stressed out easily.' },
+      { t: 'N', text: 'I am relaxed most of the time.', reverse: true },
+      { t: 'N', text: 'I worry about things.' },
+      { t: 'N', text: 'I seldom feel blue.', reverse: true },
+      { t: 'O', text: 'I have a vivid imagination.' },
+      { t: 'O', text: 'I am not interested in abstract ideas.', reverse: true },
+      { t: 'O', text: 'I have difficulty understanding abstract ideas.', reverse: true },
+      { t: 'O', text: 'I do not have a good imagination.', reverse: true },
+      { t: 'A', text: 'I sympathize with others’ feelings.' },
+      { t: 'A', text: 'I am not interested in other people’s problems.', reverse: true },
+      { t: 'A', text: 'I feel others’ emotions.' },
+      { t: 'A', text: 'I am not really interested in others.', reverse: true },
+      { t: 'C', text: 'I get chores done right away.' },
+      { t: 'C', text: 'I often forget to put things back in their proper place.', reverse: true },
+      { t: 'C', text: 'I like order.' },
+      { t: 'C', text: 'I make a mess of things.', reverse: true }
+    ];
+
+    const qContainer = document.getElementById('questions');
+    questions.forEach((q, i) => {
+      const qDiv = document.createElement('div');
+      qDiv.className = 'question-block';
+      qDiv.innerHTML = `
+        <div class="statement">${i + 1}. ${q.text}</div>
+        <div class="scale">
+          <span class="label-text">Disagree</span>
+          ${[1, 2, 3, 4, 5].map(v => `
+            <input type="radio" id="q${i}-${v}" name="q${i}" value="${v}" />
+            <label for="q${i}-${v}"></label>
+          `).join('')}
+          <span class="label-text">Agree</span>
+        </div>
+      `;
+      qContainer.appendChild(qDiv);
+    });
+
+    const traitNames = {
+  E: "Extraversion",
+  N: "Neuroticism",
+  O: "Openness",
+  A: "Agreeableness",
+  C: "Conscientiousness"
+};
+const traitClass = {
+  E: "extraversion",
+  N: "neuroticism",
+  O: "openness",
+  A: "agreeableness",
+  C: "conscientiousness"
+};
+
+document.getElementById('mini-ipip-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const scores = { E: 0, N: 0, O: 0, A: 0, C: 0 };
+  const counts = { E: 0, N: 0, O: 0, A: 0, C: 0 };
+
+  questions.forEach((q, i) => {
+    const raw = parseInt(formData.get(`q${i}`));
+    if (!isNaN(raw)) {
+      const val = q.reverse ? 6 - raw : raw;
+      scores[q.t] += val;
+      counts[q.t]++;
+    }
+  });
+
+let bars = Object.entries(scores).map(([trait, score]) => {
+  const avg = score / counts[trait];
+  const percent = Math.round((avg - 1) / 4 * 100); // 1-5 scale to 0-100%
+  return `
+    <div class="trait-bar-container">
+      <span class="trait-label">${traitNames[trait]}</span>
+      <div class="trait-bar-bg">
+        <div class="trait-bar ${traitClass[trait]}" style="width:${percent}%;"></div>
+        <div class="trait-thumb ${traitClass[trait]}" style="left:calc(${percent}%);"></div>
+      </div>
+      <span class="trait-value">${percent}%</span>
+    </div>
+  `;
+}).join('');
+
+  document.getElementById('results').innerHTML = `<h3>Your Scores</h3>${bars}`;
+});
+  </script>
+</body>
+</html>
