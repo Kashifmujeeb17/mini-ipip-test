@@ -25,6 +25,14 @@
   margin-bottom: 40px;
 }
 
+.result-bar-fill {
+  height: 100%;
+  background: #4c66f1;
+  border-radius: 6px;
+  width: 0%; /* Start at 0 */
+  transition: width 1s ease-out;
+}
+
     .question-block {
       margin: 30px 0;
     }
@@ -272,6 +280,13 @@ document.getElementById('mini-ipip-form').addEventListener('submit', e => {
       <h3>Thank you, <span style="color:green">${username}</span>! Your results have been submitted.</h3>
       ${bars}
     `;
+// Animate bars after they are added to the DOM
+setTimeout(() => {
+  document.querySelectorAll('.result-bar-fill').forEach((bar, i) => {
+    const percent = Object.values(percentages)[i];
+    bar.style.width = percent + '%';
+  });
+}, 100); // delay to trigger transition
 
     submitButton.disabled = false;
     submitButton.textContent = "Submit";
