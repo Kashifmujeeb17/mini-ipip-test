@@ -68,6 +68,8 @@
       margin: 0 8px;
       font-weight: bold;
     }
+
+    
     button {
       margin-top: 30px;
       padding: 10px 20px;
@@ -141,6 +143,7 @@
   margin-left: 8px;
   font-weight: bold;
 }
+
 /* Responsive design for all sections */
 @media (max-width: 600px) {
   body {
@@ -179,13 +182,23 @@
     flex-basis: 100%;
     text-align: center;
   }
+
+.label-text {
+  margin: 0 8px;
+  font-weight: bold;
+}
+
+/* ✅ Add below */
 .label-text:first-of-type {
   color: #2a8bc9;
+  font-weight: bold;
 }
 
 .label-text:last-of-type {
   color: #3baa3b;
+  font-weight: bold;
 }
+
   .trait-bar-container {
     flex-direction: column;
     align-items: flex-start;
@@ -213,7 +226,34 @@
     font-size: 16px;
     padding: 12px;
   }
+
+
 }
+
+.trait-bar.extraversion {
+  background: linear-gradient(to right, #f4b942, #f9d77e);
+}
+
+.trait-bar.neuroticism {
+  background: linear-gradient(to right, #3bb3c3, #6cdde8);
+}
+
+.trait-bar.openness {
+  background: linear-gradient(to right, #4caf50, #8bc34a);
+}
+
+.trait-bar.agreeableness {
+  background: linear-gradient(to right, #f44336, #f77b6c);
+}
+
+.trait-bar.conscientiousness {
+  background: linear-gradient(to right, #8e44ec, #a569e4);
+}
+
+.trait-bar {
+  transition: width 0.5s ease-in-out;
+}
+
 
   </style>
 </head>
